@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from collections import Counter
 
 """
 Puzzle input looks like this:
@@ -25,18 +26,25 @@ And add them all up:
 2 + 1 + 0 + 1 + 2 + 5 = 11
 """
 
-left = list()
-right = list()
+raw_left = list()
+raw_right = list()
 with open(sys.argv[1]) as f:
     for row in f.readlines():
         a,b = row.split()
-        left.append(int(a))
-        right.append(int(b))
+        raw_left.append(int(a))
+        raw_right.append(int(b))
 
-left = sorted(left)
-right = sorted(right)
-sum = 0
+left = sorted(raw_left)
+right = sorted(raw_right)
+total_distance = 0
 for i in range(len(left)):
-    sum += abs(left[i] - right[i])
+    total_distance += abs(left[i] - right[i])
 
-print(sum)
+print(f"Total Distance: {total_distance}")
+
+counts = Counter(raw_right)
+similarity_score = 0
+for i in left:
+    similarity_score += i * counts[i]
+
+print(f"Similarity score: {similarity_score}")

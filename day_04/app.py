@@ -74,3 +74,22 @@ for row in get_rows(data):
     count += len(re.findall('XMAS', row))
 
 print(f"Count: {count}")
+
+# Second star challenge isn't compatible with the get_rows() solution
+# gonna do a simple grid search instead
+grid = data.strip().split()
+
+height = len(grid)
+width = len(grid[0])
+
+count = 0
+for h in range(1, height - 1):
+    for w in range(1, width - 1):
+        # (h,w) represents the center of the cross
+        if grid[h][w] != 'A':
+            continue
+        corners = grid[h-1][w-1] + grid[h-1][w+1] + grid[h+1][w-1] + grid[h+1][w+1]
+        if corners in ['MSMS', 'SMSM', 'MMSS', 'SSMM']:
+            count += 1
+
+print(f"X-MAS count: {count}")

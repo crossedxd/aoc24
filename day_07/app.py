@@ -25,3 +25,25 @@ for target, numbers in data:
             break
 
 print(f"Test value sum: {test_sum}")
+
+total = 0
+for target, numbers in data:
+    for operators in product('+*|', repeat=len(numbers)-1):
+        nums = [i for i in numbers]
+        ops = list(operators)
+        while ops:
+            a = nums.pop(0)
+            b = nums.pop(0)
+            op = ops.pop(0)
+            if op == '+':
+                a += b
+            elif op == '*':
+                a *= b
+            elif op == '|':
+                a = int(f'{a}{b}')
+            nums.insert(0, a)
+        if target == nums[0]:
+            total += target
+            break
+
+print(f"Total calibration result: {total}")

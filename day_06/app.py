@@ -67,7 +67,6 @@ class Map:
         visited = {self.start[1]}
         tread_count = Counter()
         obstacles = self.find_elements('#')
-        # print(obstacles)
         is_navigating = True
         while is_navigating:
             # Loop until we either leave the map or retrace our steps
@@ -85,22 +84,37 @@ class Map:
                     # Have we already been here?
                     if new_pos in visited:
                         tread_count[new_pos] += 1
-                        if tread_count[new_pos] == 3:
+                        if tread_count[new_pos] > 4:
                             on_map = True
                             is_navigating = False
                             break
                     # Did we collide with an object?
                     if new_pos in obstacles:
                         k = list(Map.vectors.keys())
-                        rot = k[(k.index(rot) + 1) % len(k)]
+                        rot = k[(k.index(rot) + 1) % len(k)] # This was a terrible idea
                     else:
                         pos = new_pos
                         visited.add(pos)
-            pass
         return on_map, visited
 
 
 with open(sys.argv[1]) as f:
     m = Map([list(row) for row in f.read().strip().split('\n')])
 
-print(f"Visited count: {len(m.navigate()[1])}")
+visited = m.navigate()[1]
+print(f"Visited count: {len(visited)}")
+
+# Was originally brute-forcing h,w combos, but now I'm following some clever advice
+# about only bothering to add obstacles to places already visited in part 1
+loop_count = 0
+for v in visited:
+    if v == m.start[1]:
+        continue
+    h, w = v
+    m.set_pos(h, w, '#')
+    on_map, visited = m.navigate()
+    if on_map:
+        loop_count += 1
+    m.set_pos(h, w, '.')
+
+print(f"Loop count: {loop_count}")

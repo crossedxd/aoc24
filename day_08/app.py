@@ -20,6 +20,29 @@ class Node:
             Node(self.h - delta.h, self.w - delta.w)
         ]
 
+    def t_freq_antinodes(self, other, height, width):
+        delta = self.delta(other)
+        antinodes = set()
+        h, w = self.h, self.w
+        while (
+            h >= 0 and
+            w >= 0 and
+            h < height and
+            w < width):
+            antinodes.add(Node(h, w))
+            h -= delta.h
+            w -= delta.w
+        h, w = self.h, self.w
+        while (
+            h >= 0 and
+            w >= 0 and
+            h < height and
+            w < width):
+            antinodes.add(Node(h, w))
+            h += delta.h
+            w += delta.w
+        return antinodes
+
     def __repr__(self):
         return f'Node({self.h},{self.w})'
 
@@ -55,3 +78,27 @@ for antinode in antinodes:
         unique_locations += 1
 
 print(f"Unique locations: {unique_locations}")
+
+t_freq_antinodes = set()
+for freq in nodes:
+    for a, b in combinations(nodes[freq], 2):
+        [t_freq_antinodes.add(i) for i in a.t_freq_antinodes(b, height, width)]
+
+t_freq_locations = 0
+for antinode in t_freq_antinodes:
+    if (antinode.h >= 0 and
+        antinode.w >= 0 and
+        antinode.h < height and
+        antinode.w < width):
+        t_freq_locations += 1
+
+print(f"T-frequency locations: {t_freq_locations}")
+
+# # This was a quick renderer for the test maps
+# for h in range(height):
+#     for w in range(width):
+#         if Node(h,w) in t_freq_antinodes:
+#             print('#', end='')
+#         else:
+#             print('.', end='')
+#     print()
